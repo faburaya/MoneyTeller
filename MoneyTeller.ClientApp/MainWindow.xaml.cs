@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Configuration;
 using System.Globalization;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,7 +36,14 @@ namespace MoneyTeller.ClientApp
             _decimalParserStyle = NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint;
         }
 
-        private void OnClickConvert(object sender, RoutedEventArgs e)
+        private static string MakeRequestUrlFor(decimal amount)
+        {
+            Uri prefix = new(
+                ConfigurationManager.AppSettings["moneyTellerApiUrl"] ?? "API_URL_NOT_CONFIGURED");
+            return new Uri(prefix, amount.ToString(CultureInfo.InvariantCulture)).ToString();
+        }
+
+        private async void OnClickConvert(object sender, RoutedEventArgs e)
         {
             txtOutput.Clear();
             string amountAsText = txtInput.Text;
@@ -45,7 +52,13 @@ namespace MoneyTeller.ClientApp
                     _decimalParserCulture,
                     out decimal amountAsNumber))
             {
-                txtOutput.Text = $"Conversion successfull! {amountAsNumber}";
+                btnConvert.IsEnabled = false;
+                txtInput.IsEnabled = false;
+                txtOutput.Text = $"Sending HTTP request: {MakeRequestUrlFor(amountAsNumber)}\n";
+                await Task.Run(() => Thread.Sleep(TimeSpan.FromMilliseconds(500)));
+                txtOutput.Text += "\nDONE";
+                btnConvert.IsEnabled = true;
+                txtInput.IsEnabled = true;
             }
             else
             {
