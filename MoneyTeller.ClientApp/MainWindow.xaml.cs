@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Globalization;
-using System.Threading;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MoneyTeller.ClientApp
 {
@@ -25,11 +19,17 @@ namespace MoneyTeller.ClientApp
             InitializeComponent();
         }
 
+        private static readonly HttpClient _httpClient;
         private static readonly CultureInfo _decimalParserCulture;
         private static readonly NumberStyles _decimalParserStyle;
 
         static MainWindow()
         {
+            _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "MoneyTeller Client Application");
+
             _decimalParserCulture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
             _decimalParserCulture.NumberFormat.NumberGroupSeparator = " ";
             _decimalParserCulture.NumberFormat.NumberDecimalSeparator = ",";
@@ -38,9 +38,22 @@ namespace MoneyTeller.ClientApp
 
         private static string MakeRequestUrlFor(decimal amount)
         {
-            Uri prefix = new(
-                ConfigurationManager.AppSettings["moneyTellerApiUrl"] ?? "API_URL_NOT_CONFIGURED");
-            return new Uri(prefix, amount.ToString(CultureInfo.InvariantCulture)).ToString();
+            StringBuilder builder = new();
+            builder.Append(ConfigurationManager.AppSettings["moneyTellerApiUrl"] ?? "API_URL_NOT_SET");
+            if (builder[^1] != '/')
+            {
+                builder.Append('/');
+            }
+            builder.Append(amount.ToString(CultureInfo.InvariantCulture));
+            return builder.ToString();
+        }
+
+        private async Task<Serialization.ConversionResponse> RequestConversion(decimal amount)
+        {
+            string url = MakeRequestUrlFor(amount);
+            txtOutput.Text = $"Sending HTTP request: {url}\n";
+            string payload = await _httpClient.GetStringAsync(url);
+            return JsonSerializer.Deserialize<Serialization.ConversionResponse>(payload);
         }
 
         private async void OnClickConvert(object sender, RoutedEventArgs e)
@@ -54,9 +67,8 @@ namespace MoneyTeller.ClientApp
             {
                 btnConvert.IsEnabled = false;
                 txtInput.IsEnabled = false;
-                txtOutput.Text = $"Sending HTTP request: {MakeRequestUrlFor(amountAsNumber)}\n";
-                await Task.Run(() => Thread.Sleep(TimeSpan.FromMilliseconds(500)));
-                txtOutput.Text += "\nDONE";
+                Serialization.ConversionResponse response = await RequestConversion(amountAsNumber);
+                txtOutput.Text += $"\nResponse:\n{response.AmountInWords ?? response.ErrorMessage}";
                 btnConvert.IsEnabled = true;
                 txtInput.IsEnabled = true;
             }
