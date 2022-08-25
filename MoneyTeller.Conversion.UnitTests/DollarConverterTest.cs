@@ -20,10 +20,16 @@ namespace MoneyTeller.Conversion.UnitTests
             Assert.Equal("one dollar", converter.ToWords(1));
         }
 
-        private static readonly CultureInfo _decimalParserCulture = new("en-US");
+        private static readonly CultureInfo _decimalParserCulture;
+        private static readonly NumberStyles _decimalParserStyle;
 
-        private static readonly NumberStyles _decimalParserStyle =
-            NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint;
+        static DollarConverterTest()
+        {
+            _decimalParserStyle = NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint;
+            _decimalParserCulture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+            _decimalParserCulture.NumberFormat.NumberGroupSeparator = ",";
+            _decimalParserCulture.NumberFormat.NumberDecimalSeparator = ".";
+        }
 
         private static void Test(string currency, string expected)
         {

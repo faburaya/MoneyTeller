@@ -95,7 +95,14 @@ namespace MoneyTeller.Conversion
             AppendPart(buffer, number, "million", (uint)1e6, (uint)1e9, AppendThousands);
         }
 
-        private static readonly decimal _one_cent = decimal.Parse("0.01", new CultureInfo("en-US"));
+        private static readonly decimal _one_cent;
+
+        static DollarConverter()
+        {
+            CultureInfo culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+            culture.NumberFormat.NumberDecimalSeparator = ".";
+            _one_cent = decimal.Parse("0.01", culture);
+        }
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException">If the input is out of range.</exception>
