@@ -18,16 +18,17 @@ namespace MoneyTeller.Controllers
 
         // GET api/<ConversionController>/123.45
         [HttpGet("{amount}")]
-        public ConversionResponse Get(decimal amount)
+        public Serialization.ConversionResponse Get(decimal amount)
         {
             try
             {
-                return new ConversionResponse(_converter.ToWords(amount));
+                return new Serialization.ConversionResponse(_converter.ToWords(amount), null);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Could not process request: {ex}", ex);
-                return new ConversionResponse("");
+                string errorMessage = $"Could not process request: {ex}";
+                _logger.LogError(errorMessage);
+                return new Serialization.ConversionResponse(string.Empty, errorMessage);
             }
         }
     }

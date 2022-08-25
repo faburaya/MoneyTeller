@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTeller.Conversion.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTeller.ClientApp", "MoneyTeller.ClientApp\MoneyTeller.ClientApp.csproj", "{DB1DC4C3-4652-4584-AD3A-4EFCFC826EC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTeller.Serialization", "MoneyTeller.Serialization\MoneyTeller.Serialization.csproj", "{BBAF1012-37C0-4739-B15D-B3DDE5A6C209}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DB1DC4C3-4652-4584-AD3A-4EFCFC826EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB1DC4C3-4652-4584-AD3A-4EFCFC826EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB1DC4C3-4652-4584-AD3A-4EFCFC826EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBAF1012-37C0-4739-B15D-B3DDE5A6C209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBAF1012-37C0-4739-B15D-B3DDE5A6C209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBAF1012-37C0-4739-B15D-B3DDE5A6C209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBAF1012-37C0-4739-B15D-B3DDE5A6C209}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
