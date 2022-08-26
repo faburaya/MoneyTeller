@@ -8,7 +8,7 @@ namespace MoneyTeller.Serialization
     /// <param name="AmountInWords">An amount of currency in words.</param>
     /// <param name="ErrorMessage">Available when a server side error occurs.</param>
     public readonly record struct ConversionResponse(
-        [property: JsonPropertyName("amount")] string AmountInWords,
+        [property: JsonPropertyName("amount")] string? AmountInWords,
         [property: JsonPropertyName("error")] string? ErrorMessage
     );
 }

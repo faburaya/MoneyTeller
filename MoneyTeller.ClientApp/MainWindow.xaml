@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="MoneyTeller Client Application"
-        Height="320" Width="400" ResizeMode="CanMinimize">
+        Height="250" Width="400" ResizeMode="CanMinimize">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -25,6 +25,10 @@
                 x:Name="btnConvert"
                 Click="OnClickConvert">Convert</Button>
 
-        <TextBox Grid.Row="2" Margin="0,5,0,0" IsReadOnly="True" x:Name="txtOutput"/>
+        <TextBox Grid.Row="2" Margin="0,5,0,0"
+                 VerticalScrollBarVisibility="Auto"
+                 TextWrapping="Wrap"
+                 IsReadOnly="True"
+                 x:Name="txtOutput"/>
     </Grid>
 </Window>

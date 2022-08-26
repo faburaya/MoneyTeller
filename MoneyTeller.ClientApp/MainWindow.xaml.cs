@@ -51,7 +51,7 @@ namespace MoneyTeller.ClientApp
         private async Task<Serialization.ConversionResponse> RequestConversion(decimal amount)
         {
             string url = MakeRequestUrlFor(amount);
-            txtOutput.Text = $"Sending HTTP request: {url}\n";
+            txtOutput.Text = $"Sending HTTP request:\n{url}\n";
             string payload = await _httpClient.GetStringAsync(url);
             return JsonSerializer.Deserialize<Serialization.ConversionResponse>(payload);
         }
@@ -60,22 +60,32 @@ namespace MoneyTeller.ClientApp
         {
             txtOutput.Clear();
             string amountAsText = txtInput.Text;
-            if (decimal.TryParse(amountAsText,
+            if (!decimal.TryParse(amountAsText,
                     _decimalParserStyle,
                     _decimalParserCulture,
                     out decimal amountAsNumber))
             {
-                btnConvert.IsEnabled = false;
-                txtInput.IsEnabled = false;
-                Serialization.ConversionResponse response = await RequestConversion(amountAsNumber);
-                txtOutput.Text += $"\nResponse:\n{response.AmountInWords ?? response.ErrorMessage}";
-                btnConvert.IsEnabled = true;
-                txtInput.IsEnabled = true;
-            }
-            else
-            {
                 txtOutput.Text = "Could not parse provided amount!\nInput example: 12 345,67";
+                return;
             }
+
+            btnConvert.IsEnabled = false;
+            txtInput.IsEnabled = false;
+
+            string result;
+            try
+            {
+                Serialization.ConversionResponse response = await RequestConversion(amountAsNumber);
+                result = response.AmountInWords ?? response.ErrorMessage ?? "(nothing)";
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+            }
+
+            txtOutput.Text += $"\n[Response]\n{result}";
+            btnConvert.IsEnabled = true;
+            txtInput.IsEnabled = true;
         }
     }
 }

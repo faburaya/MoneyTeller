@@ -108,19 +108,15 @@ namespace MoneyTeller.Conversion
         /// <exception cref="ArgumentOutOfRangeException">If the input is out of range.</exception>
         public string ToWords(decimal amount)
         {
-            if (amount < decimal.Zero)
-            {
-                throw new ArgumentOutOfRangeException($"Negative amount ({amount}) is not allowed!");
-            }
-
-            uint dollars = (uint)decimal.Floor(amount);
+            decimal integerAmount = decimal.Floor(amount);
             const uint upperLimit = (uint)1e9;
-            if (dollars >= upperLimit)
+            if (integerAmount >= upperLimit || amount < decimal.Zero)
             {
-                throw new ArgumentOutOfRangeException($"Cannot convert input greater than {upperLimit}!");
+                throw new ArgumentOutOfRangeException(nameof(amount));
             }
 
             StringBuilder buffer = new();
+            uint dollars = (uint)integerAmount;
             if (dollars > 0)
             {
                 AppendMillions(dollars, buffer);

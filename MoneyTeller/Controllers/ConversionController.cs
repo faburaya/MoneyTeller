@@ -26,9 +26,9 @@ namespace MoneyTeller.Controllers
             }
             catch (Exception ex)
             {
-                string errorMessage = $"Could not process request: {ex}";
-                _logger.LogError(errorMessage);
-                return new Serialization.ConversionResponse(string.Empty, errorMessage);
+                string error = ex.ToString();
+                _logger.LogError("Could not serve request: {error}", error);
+                return new Serialization.ConversionResponse(null, $"Could not serve request: {ex.Message}");
             }
         }
     }
